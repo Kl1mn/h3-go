@@ -20,15 +20,12 @@ func (v vec2d) toCoordIJK() coordIJK {
 	a1 = math.Abs(v.x)
 	a2 = math.Abs(v.y)
 
-	// first do a reverse conversion
 	x2 = a2 / M_SIN60
 	x1 = a1 + x2/2
 
-	// check if we have the center of a hex
 	m1 = int(x1)
 	m2 = int(x2)
 
-	// otherwise round correctly
 	r1 = x1 - float64(m1)
 	r2 = x2 - float64(m2)
 
@@ -77,8 +74,6 @@ func (v vec2d) toCoordIJK() coordIJK {
 			}
 		}
 	}
-
-	// now fold across the axes if necessary
 
 	if v.x < 0 {
 		if (coord.j % 2) == 0 {

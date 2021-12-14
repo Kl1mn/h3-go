@@ -79,11 +79,6 @@ func (c *GeoCoord) deg2rad() {
 	c.Longitude = c.Longitude * deg2rad
 }
 
-func (c *GeoCoord) rad2deg() {
-	c.Latitude = c.Latitude * rad2deg
-	c.Longitude = c.Longitude * rad2deg
-}
-
 func (c GeoCoord) isNotValid() bool {
 	return isNotFinite(c.Latitude) || isNotFinite(c.Longitude)
 }

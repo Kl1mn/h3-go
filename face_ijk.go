@@ -41,9 +41,7 @@ func (f faceIJK) toH3Fat(res int) h3IndexFat {
 
 	numRots := f.toBaseCellCCWrot60()
 	if isBaseCellPentagon(h3Fat.baseCell) {
-		// force rotation out of missing k-axes sub-sequence
 		if h3Fat.leadingNonZeroDigit() == K_AXES_DIGIT {
-			// check for a cw/ccw offset face; default is ccw
 			if baseCellsData[h3Fat.baseCell].cwOffsetPent[0] == f.face ||
 				baseCellsData[h3Fat.baseCell].cwOffsetPent[1] == f.face {
 				h3Fat.rotate60cw()
@@ -62,10 +60,6 @@ func (f faceIJK) toH3Fat(res int) h3IndexFat {
 	}
 
 	return h3Fat
-}
-
-func (f faceIJK) toGeo(res int) GeoCoord {
-	return GeoCoord{}
 }
 
 func (f faceIJK) toBaseCell() int {

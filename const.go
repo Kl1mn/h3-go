@@ -27,7 +27,6 @@ const (
 
 var (
 	deg2rad = math.Pi / 180.0
-	rad2deg = 180.0 / math.Pi
 
 	H3_MODE_MASK          = uint64(15) << H3_MODE_OFFSET
 	H3_MODE_MASK_NEGATIVE = ^H3_MODE_MASK

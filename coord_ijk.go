@@ -94,7 +94,6 @@ func (c *coordIJK) scale(factor int) {
 	c.k *= factor
 }
 
-// check for pointers
 func (c *coordIJK) add(c1, c2 *coordIJK) {
 	c.i = c1.i + c2.i
 	c.j = c1.j + c2.j

@@ -27,15 +27,6 @@ func (h h3IndexFat) toH3() H3Index {
 	return result
 }
 
-func (h h3IndexFat) toGeo() GeoCoord {
-	f := h.toFaceIJK()
-	return f.toGeo(h.res)
-}
-
-func (h h3IndexFat) toFaceIJK() faceIJK {
-	return faceIJK{}
-}
-
 func (h h3IndexFat) leadingNonZeroDigit() int {
 	for r := 0; r < h.res; r++ {
 		if h.index[r] != 0 {
