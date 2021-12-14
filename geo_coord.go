@@ -139,26 +139,19 @@ func (g GeoCoord) toVec2d(res int) (vec2d, int) {
 		return v, face
 	}
 
-	// now have face and r, now find CCW theta from CII i-axis
 	theta := posAngleRads(faceAxesAzRadsCII[face][0] - posAngleRads(faceCenterGeo[face].geoAzimuthRads(g)))
 
-	// adjust theta for Class III (odd resolutions)
 	if isResClassIII(res) {
 		theta = posAngleRads(theta - M_AP7_ROT_RADS)
 	}
 
-	// perform gnomonic scaling of r
 	r = math.Tan(r)
 
-	// scale for current resolution length u
 	r /= RES0_U_GNOMONIC
 	for i := 0; i < res; i++ {
 		r *= M_SQRT7
 	}
 
-	// we now have (r, theta) in hex2d with theta ccw from x-axes
-
-	// convert to local x,y
 	v.x = r * math.Cos(theta)
 	v.y = r * math.Sin(theta)
 
@@ -166,10 +159,8 @@ func (g GeoCoord) toVec2d(res int) (vec2d, int) {
 }
 
 func (p1 GeoCoord) distRads(p2 GeoCoord) float64 {
-	// use spherical triangle with p1 at A, p2 at B, and north pole at C
 	bigC := math.Abs(p2.Longitude - p1.Longitude)
-	if bigC > M_PI { // assume we want the complement
-		// note that in this case they can't both be negative
+	if bigC > M_PI {
 		lon1 := p1.Longitude
 		if lon1 < 0 {
 			lon1 += 2 * M_PI
@@ -185,7 +176,6 @@ func (p1 GeoCoord) distRads(p2 GeoCoord) float64 {
 	b := M_PI_2 - p1.Latitude
 	a := M_PI_2 - p2.Latitude
 
-	// use law of cosines to find c
 	cosc := math.Cos(a)*math.Cos(b) + math.Sin(a)*math.Sin(b)*math.Cos(bigC)
 	if cosc > 1 {
 		cosc = 1
@@ -213,13 +203,3 @@ func (p1 GeoCoord) geoAzimuthRads(p2 GeoCoord) float64 {
 		math.Cos(p1.Latitude)*math.Sin(p2.Latitude)-
 			math.Sin(p1.Latitude)*math.Cos(p2.Latitude)*math.Cos(p2.Longitude-p1.Longitude))
 }
-
-// func ToGeo(h H3Index) GeoCoord {
-// 	geo := geoFromH3(h)
-// 	geo.rad2deg()
-// 	return geo
-// }
-
-// func geoFromH3(h3 H3Index) GeoCoord {
-// 	return GeoCoord{}
-// }

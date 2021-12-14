@@ -69,7 +69,6 @@ func (h *h3IndexFat) rotate60ccw() {
 }
 
 func (h *h3IndexFat) rotatePent60ccw() {
-	// rotate in place; skips any leading 1 digits (k-axis)
 	rotDigit := []int{
 		0, // original digit 0
 		5, // original digit 1
@@ -82,16 +81,11 @@ func (h *h3IndexFat) rotatePent60ccw() {
 
 	foundFirstNonZeroDigit := false
 	for r := 0; r < h.res; r++ {
-		// rotate this digit
 		h.index[r] = rotDigit[h.index[r]]
 
-		// look for the first non-zero digit so we
-		// can adjust for deleted k-axes sequence
-		// if neccessary
 		if !foundFirstNonZeroDigit && h.index[r] != 0 {
 			foundFirstNonZeroDigit = true
 
-			// adjust for deleted k-axes sequence
 			if h.leadingNonZeroDigit() == K_AXES_DIGIT {
 				h.rotate60ccw()
 			}
