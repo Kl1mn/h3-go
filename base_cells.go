@@ -833,7 +833,8 @@ var (
 			cwOffsetPent: [2]int{0, 0},
 		}, // base cell 103
 		{
-			isPentagon: false, cwOffsetPent: [2]int{0, 0},
+			isPentagon:   false,
+			cwOffsetPent: [2]int{0, 0},
 		}, // base cell 104
 		{
 			isPentagon:   false,
