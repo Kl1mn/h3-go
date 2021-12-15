@@ -1,5 +1,11 @@
 package h3
 
+var (
+	rotate60cwDigits      = []int{0, 3, 6, 2, 5, 1, 4}
+	rotate60ccwDigits     = []int{0, 5, 3, 1, 6, 4, 2}
+	rotatePent60ccwDigits = []int{0, 5, 3, 1, 6, 4, 2}
+)
+
 type h3IndexFat struct {
 	mode     int
 	res      int
@@ -37,51 +43,21 @@ func (h h3IndexFat) leadingNonZeroDigit() int {
 }
 
 func (h *h3IndexFat) rotate60cw() {
-	rotDigit := []int{
-		0, // original digit 0
-		3, // original digit 1
-		6, // original digit 2
-		2, // original digit 3
-		5, // original digit 4
-		1, // original digit 5
-		4, // original digit 6
-	}
-
 	for r := 0; r < h.res; r++ {
-		h.index[r] = rotDigit[h.index[r]]
+		h.index[r] = rotate60cwDigits[h.index[r]]
 	}
 }
 
 func (h *h3IndexFat) rotate60ccw() {
-	rotDigit := []int{
-		0, // original digit 0
-		5, // original digit 1
-		3, // original digit 2
-		1, // original digit 3
-		6, // original digit 4
-		4, // original digit 5
-		2, // original digit 6
-	}
-
 	for r := 0; r < h.res; r++ {
-		h.index[r] = rotDigit[h.index[r]]
+		h.index[r] = rotate60ccwDigits[h.index[r]]
 	}
 }
 
 func (h *h3IndexFat) rotatePent60ccw() {
-	rotDigit := []int{
-		0, // original digit 0
-		5, // original digit 1
-		3, // original digit 2
-		1, // original digit 3
-		6, // original digit 4
-		4, // original digit 5
-		2, // original digit 6
-	}
-
 	foundFirstNonZeroDigit := false
 	for r := 0; r < h.res; r++ {
-		h.index[r] = rotDigit[h.index[r]]
+		h.index[r] = rotatePent60ccwDigits[h.index[r]]
 
 		if !foundFirstNonZeroDigit && h.index[r] != 0 {
 			foundFirstNonZeroDigit = true
