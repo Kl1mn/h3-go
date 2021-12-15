@@ -31,16 +31,19 @@ func TestFromGeo(t *testing.T) {
 		if err != nil {
 			t.FailNow()
 		}
-		exp, err := strconv.ParseUint(arr[2], 10, 64)
-		if err != nil {
-			t.FailNow()
+
+		for i := 0; i < 13; i++ {
+			exp, err := strconv.ParseUint(arr[i+2], 10, 64)
+			if err != nil {
+				t.FailNow()
+			}
+
+			res := FromGeo(GeoCoord{
+				Latitude:  lat,
+				Longitude: long,
+			}, i)
+
+			req.Equal(exp, uint64(res))
 		}
-
-		res := FromGeo(GeoCoord{
-			Latitude:  lat,
-			Longitude: long,
-		}, 11)
-
-		req.Equal(exp, uint64(res))
 	}
 }

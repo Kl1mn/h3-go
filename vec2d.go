@@ -30,8 +30,8 @@ func (v vec2d) toCoordIJK() coordIJK {
 	r2 = x2 - float64(m2)
 
 	if r1 < 0.5 {
-		if r1 < float64(1.0)/3.0 {
-			if r2 < (1+r1)/2.0 {
+		if r1 < float64(1)/3 {
+			if r2 < (1+r1)/2 {
 				coord.i = m1
 				coord.j = m2
 			} else {
@@ -45,7 +45,7 @@ func (v vec2d) toCoordIJK() coordIJK {
 				coord.j = m2 + 1
 			}
 
-			if (1-r1) <= r2 && r2 < (2.0*r1) {
+			if (1-r1) <= r2 && r2 < (2*r1) {
 				coord.i = m1 + 1
 			} else {
 				coord.i = m1
@@ -79,11 +79,11 @@ func (v vec2d) toCoordIJK() coordIJK {
 		if (coord.j % 2) == 0 {
 			axisi := int(coord.j / 2)
 			diff := int(coord.i - axisi)
-			coord.i = coord.i - 2.0*diff
+			coord.i = coord.i - 2*diff
 		} else {
 			axisi := int((coord.j + 1) / 2)
 			diff := int(coord.i - axisi)
-			coord.i = coord.i - (2.0*diff + 1)
+			coord.i = coord.i - (2*diff + 1)
 		}
 	}
 

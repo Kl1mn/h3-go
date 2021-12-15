@@ -15,5 +15,5 @@ func (h *H3Index) setBaseCell(bc int) {
 }
 
 func (h *H3Index) setIndexDigit(res, digit int) {
-	*h = H3Index(((uint64(*h) & ^(H3_DIGIT_MASK << (uint64(MAX_H3_RES-(res)) * H3_PER_DIGIT_OFFSET))) | ((uint64(digit)) << (uint64(MAX_H3_RES-res) * H3_PER_DIGIT_OFFSET))))
+	*h = H3Index((uint64(*h) & ^(H3_DIGIT_MASK << (uint64(MAX_H3_RES-res) * H3_PER_DIGIT_OFFSET))) | (uint64(digit) << (uint64(MAX_H3_RES-res) * H3_PER_DIGIT_OFFSET)))
 }
