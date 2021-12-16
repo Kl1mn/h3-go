@@ -33,6 +33,78 @@ func (h h3IndexFat) toH3() H3Index {
 	return result
 }
 
+func (h h3IndexFat) toGeo() GeoCoord {
+	f := h.toFaceIJK()
+	return f.toGeo(h.res)
+}
+
+func (h h3IndexFat) toFaceIJK() faceIJK {
+
+	if isBaseCellPentagon(h.baseCell) && h.leadingNonZeroDigit() == 5 {
+		h.rotate60cw()
+	}
+
+	var (
+		fijk = baseCellsData[h.baseCell].homeFijk
+		ok   bool
+	)
+
+	if fijk, ok = h.toFaceIjkWithInitializedFijk(fijk); !ok {
+		return fijk
+	}
+
+	origCoord := fijk.coord
+
+	res := h.res
+	if isResClassIII(h.res) {
+		fijk.coord.downAp7r()
+		res++
+	}
+
+	pentLeading4 := isBaseCellPentagon(h.baseCell) && h.leadingNonZeroDigit() == 4
+	if fijk.adjustOverageClassII(res, pentLeading4, false) > 0 {
+		if isBaseCellPentagon(h.baseCell) {
+			for {
+				if fijk.adjustOverageClassII(res, false, false) == 0 {
+					break
+				}
+			}
+		}
+
+		if res != h.res {
+			fijk.coord.upAp7r()
+		}
+	} else if res != h.res {
+		fijk.coord = origCoord
+	}
+
+	return fijk
+}
+
+func (h h3IndexFat) toFaceIjkWithInitializedFijk(base faceIJK) (faceIJK, bool) {
+
+	coord := base.coord
+	ok := true
+
+	if !isBaseCellPentagon(h.baseCell) && (h.res == 0 || (base.coord.i == 0 && base.coord.j == 0 && base.coord.k == 0)) {
+		ok = false
+	}
+
+	for r := 0; r < h.res; r++ {
+		if isResClassIII(r + 1) {
+			coord.downAp7()
+		} else {
+			coord.downAp7r()
+		}
+		coord.neighbor(h.index[r])
+	}
+
+	return faceIJK{
+		face:  base.face,
+		coord: coord,
+	}, ok
+}
+
 func (h h3IndexFat) leadingNonZeroDigit() int {
 	for r := 0; r < h.res; r++ {
 		if h.index[r] != 0 {

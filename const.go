@@ -7,6 +7,10 @@ const (
 	H3_INIT         H3Index = 35184372088831
 	H3_HEXAGON_MODE         = 1
 
+	IJ = 1
+	KI = 2
+	JK = 3
+
 	H3_MODE_OFFSET      = 59
 	H3_RES_OFFSET       = 52
 	H3_BC_OFFSET        = 45
@@ -30,6 +34,7 @@ const (
 
 var (
 	deg2rad = math.Pi / 180.0
+	rad2deg = 180.0 / math.Pi
 
 	H3_MODE_MASK          = uint64(15) << H3_MODE_OFFSET
 	H3_MODE_MASK_NEGATIVE = ^H3_MODE_MASK

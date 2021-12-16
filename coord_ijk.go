@@ -32,6 +32,15 @@ func (c coordIJK) toDigit() int {
 	return digit
 }
 
+func (c coordIJK) toVec2d() vec2d {
+	i := c.i - c.k
+	j := c.j - c.k
+	return vec2d{
+		x: float64(i) - float64(j)*0.5,
+		y: float64(j) * M_SQRT3_2,
+	}
+}
+
 func (c1 coordIJK) matches(c2 *coordIJK) bool {
 	return c1.i == c2.i && c1.j == c2.j && c1.k == c2.k
 }
@@ -104,6 +113,49 @@ func (c *coordIJK) sub(c1, c2 *coordIJK) {
 	c.i = c1.i - c2.i
 	c.j = c1.j - c2.j
 	c.k = c1.k - c2.k
+}
+
+func (c *coordIJK) neighbor(digit int) {
+	if digit != 0 {
+		c.add(UNIT_VECS[digit], c)
+		c.normalize()
+	}
+}
+
+func (c *coordIJK) set(i, j, k int) {
+	c.i = i
+	c.j = j
+	c.k = k
+}
+
+func (c *coordIJK) rotate60cw() {
+	iVec := &coordIJK{1, 0, 1}
+	jVec := &coordIJK{1, 1, 0}
+	kVec := &coordIJK{0, 1, 1}
+
+	iVec.scale(c.i)
+	jVec.scale(c.j)
+	kVec.scale(c.k)
+
+	c.add(iVec, jVec)
+	c.add(kVec, c)
+
+	c.normalize()
+}
+
+func (c *coordIJK) rotate60ccw() {
+	iVec := &coordIJK{1, 1, 0}
+	jVec := &coordIJK{0, 1, 1}
+	kVec := &coordIJK{1, 0, 1}
+
+	iVec.scale(c.i)
+	jVec.scale(c.j)
+	kVec.scale(c.k)
+
+	c.add(iVec, jVec)
+	c.add(c, kVec)
+
+	c.normalize()
 }
 
 func (c *coordIJK) normalize() {

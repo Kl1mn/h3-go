@@ -96,3 +96,42 @@ func (v vec2d) toCoordIJK() coordIJK {
 
 	return coord
 }
+
+func (v vec2d) toGeo(face, res int, substrate bool) GeoCoord {
+
+	r := v.mag()
+
+	if r < EPSILON {
+		return faceCenterGeo[face]
+	}
+
+	theta := math.Atan2(v.y, v.x)
+
+	for i := 0; i < res; i++ {
+		r /= M_SQRT7
+	}
+
+	if substrate {
+		r /= 3.0
+		if isResClassIII(res) {
+
+			r /= M_SQRT7
+		}
+	}
+
+	r *= RES0_U_GNOMONIC
+
+	r = math.Atan(r)
+
+	if !substrate && isResClassIII(res) {
+		theta = posAngleRads(theta + M_AP7_ROT_RADS)
+	}
+
+	theta = posAngleRads(faceAxesAzRadsCII[face][0] - theta)
+
+	return faceCenterGeo[face].azDistanceRads(theta, r)
+}
+
+func (v vec2d) mag() float64 {
+	return math.Sqrt(v.x*v.x + v.y*v.y)
+}

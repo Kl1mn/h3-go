@@ -59,6 +59,11 @@ func (c *GeoCoord) deg2rad() {
 	c.Longitude = c.Longitude * deg2rad
 }
 
+func (c *GeoCoord) rad2deg() {
+	c.Latitude = c.Latitude * rad2deg
+	c.Longitude = c.Longitude * rad2deg
+}
+
 func (c GeoCoord) isNotValid() bool {
 	return isNotFinite(c.Latitude) || isNotFinite(c.Longitude)
 }
@@ -178,8 +183,89 @@ func posAngleRads(rads float64) float64 {
 	return tmp
 }
 
+func constrainLng(lng float64) float64 {
+	for lng > M_PI {
+		lng = lng - (2 * M_PI)
+	}
+	for lng < -M_PI {
+		lng = lng + (2 * M_PI)
+	}
+	return lng
+}
+
 func (p1 GeoCoord) geoAzimuthRads(p2 GeoCoord) float64 {
 	return math.Atan2(math.Cos(p2.Latitude)*math.Sin(p2.Longitude-p1.Longitude),
 		math.Cos(p1.Latitude)*math.Sin(p2.Latitude)-
 			math.Sin(p1.Latitude)*math.Cos(p2.Latitude)*math.Cos(p2.Longitude-p1.Longitude))
+}
+
+func (p1 GeoCoord) azDistanceRads(az, distance float64) GeoCoord {
+
+	if distance < EPSILON {
+		return p1
+	}
+
+	var (
+		sinlat float64
+		sinlon float64
+		coslon float64
+		p2     GeoCoord
+	)
+
+	az = posAngleRads(az)
+
+	if az < EPSILON || math.Abs(az-M_PI) < EPSILON {
+		if az < EPSILON {
+			p2.Latitude = p1.Latitude + distance
+		} else {
+			p2.Latitude = p1.Latitude - distance
+		}
+
+		if math.Abs(p2.Latitude-M_PI_2) < EPSILON {
+			p2.Latitude = M_PI_2
+			p2.Longitude = 0
+		} else if math.Abs(p2.Latitude+M_PI_2) < EPSILON {
+			p2.Latitude = -M_PI_2
+			p2.Longitude = 0
+		} else {
+			p2.Longitude = constrainLng(p1.Longitude)
+		}
+
+	} else {
+		sinlat = math.Sin(p1.Latitude)*math.Cos(distance) + math.Cos(p1.Latitude)*math.Sin(distance)*math.Cos(az)
+
+		if sinlat > 1 {
+			sinlat = 1
+		}
+		if sinlat < -1 {
+			sinlat = -1
+		}
+
+		p2.Latitude = math.Asin(sinlat)
+		if math.Abs(p2.Latitude-M_PI_2) < EPSILON {
+			p2.Latitude = M_PI_2
+			p2.Longitude = 0
+		} else if math.Abs(p2.Latitude+M_PI_2) < EPSILON {
+			p2.Latitude = -M_PI_2
+			p2.Longitude = 0
+		} else {
+			sinlon = math.Sin(az) * math.Sin(distance) / math.Cos(p2.Latitude)
+			coslon = (math.Cos(distance) - math.Sin(p1.Latitude)*math.Sin(p2.Latitude)) / math.Cos(p1.Latitude) / math.Cos(p2.Latitude)
+			if sinlon > 1 {
+				sinlon = 1
+			}
+			if sinlon < -1 {
+				sinlon = -1
+			}
+			if coslon > 1 {
+				sinlon = 1
+			}
+			if coslon < -1 {
+				sinlon = -1
+			}
+			p2.Longitude = constrainLng(p1.Longitude + math.Atan2(sinlon, coslon))
+		}
+	}
+
+	return p2
 }
